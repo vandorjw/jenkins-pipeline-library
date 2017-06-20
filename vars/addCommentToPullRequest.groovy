@@ -7,7 +7,7 @@
  * @param project - The github project , should be string.
  */
 def call(comment, pr, project) {
-    if(pr) {
+    if(${pr}) {
         withCredentials([[$class: 'StringBinding', credentialsId: 'github_oath_token', variable: 'GITHUB_ACCESS_TOKEN']]) {
             def githubToken = "${GITHUB_ACCESS_TOKEN}"
             def apiUrl = new URL("https://api.github.com/repos/${project}/issues/${pr}/comments")
