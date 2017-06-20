@@ -6,8 +6,8 @@
  * @param pr - The pull-request id, should be int.
  * @param project - The github project , should be string.
  */
-def call(comment, pr, project) {
-    if(${pr}) {
+def call(String comment, String pr, String project) {
+    if(pr != null) {
         withCredentials([[$class: 'StringBinding', credentialsId: 'github_oath_token', variable: 'GITHUB_ACCESS_TOKEN']]) {
             def githubToken = "${GITHUB_ACCESS_TOKEN}"
             def apiUrl = new URL("https://api.github.com/repos/${project}/issues/${pr}/comments")
