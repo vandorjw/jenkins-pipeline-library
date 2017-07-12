@@ -7,6 +7,7 @@
  */
 def call(String command, String filepath) {
         def stdout = sh(script: command, returnStdout: true)
+        echo "${stdout}"
         writeFile file: filepath, text: stdout
         } catch (err) {
             echo "ERROR  ${err}"
