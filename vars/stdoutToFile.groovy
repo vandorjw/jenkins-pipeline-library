@@ -7,6 +7,7 @@
  */
 def call(String command, String filepath) {
     try {
+        echo "Excute: ${command} and saving result to ${filepath}"
         def stdout = sh(script: command, returnStdout: true)
         echo "${stdout}"
         writeFile file: filepath, text: stdout
