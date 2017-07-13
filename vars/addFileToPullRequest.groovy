@@ -19,8 +19,9 @@ def call(String filename, String pr, String project) {
             connection.setRequestMethod("POST")
             connection.setDoOutput(true)
             connection.connect()
-
-            def fileContent = readFile "{$filename}"
+            echo "Going to read file ${filename}"
+            def fileContent = readFile "${filename}"
+            echo "${fileContent}"
             // String encoded = fileContent.bytes.encodeBase64().toString()
 
             def body = "{\"body\":\"${fileContent}\"}"
