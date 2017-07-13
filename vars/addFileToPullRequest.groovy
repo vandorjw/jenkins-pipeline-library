@@ -12,6 +12,12 @@ def call(String filename, String pr, String project) {
         def apiUrl = new URL("https://api.github.com/repos/${project}/issues/${pr}/comments")
         echo "adding ${comment} to ${apiUrl}"
         try {
+            String fileContents = new File("${filename}").readLines().join('<br />').trim()
+            def body = "{\"body\":\"${fileContents}\"}"
+        } catch (err) {
+            def body = "{\"body\":\"Can't parse ${filename}\"}"
+        }
+        try {
             def HttpURLConnection connection = apiUrl.openConnection()
             if (githubToken.length() > 0) {
                 connection.setRequestProperty("Authorization", "Bearer ${githubToken}")
@@ -19,8 +25,6 @@ def call(String filename, String pr, String project) {
             connection.setRequestMethod("POST")
             connection.setDoOutput(true)
             connection.connect()
-            String fileContents = new File("${filename}").readLines().join('<br />').trim()
-            def body = "{\"body\":\"${fileContents}\"}"
 
             OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())
             writer.write(body)
