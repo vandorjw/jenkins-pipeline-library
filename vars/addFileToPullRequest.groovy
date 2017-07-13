@@ -12,6 +12,7 @@ def call(String filename, String pr, String project) {
         def apiUrl = new URL("https://api.github.com/repos/${project}/issues/${pr}/comments")
         try {
             String fileContents = new File("${filename}").readLines().join('<br />').trim().replaceAll("[^\\x00-\\x7F]", "");
+            echo "${fileContents}"
             def body = "{\"body\":\"${fileContents}\"}"
         } catch (err) {
             def body = "{\"body\":\"Can't parse ${filename}\"}"
