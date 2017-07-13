@@ -1,7 +1,8 @@
 #!/usr/bin/groovy
 
 /**
- * Adds a comment on the PR in github
+ * Adds a comment on the PR in github.
+ * I could not find an API which allows me to upload the actual file.
  * @param filename - The file who's content we wish to leave in the comment section. Should not be empty.
  * @param pr - The pull-request id, should be int.
  * @param project - The github project , should be string.
@@ -19,9 +20,11 @@ def call(String filename, String pr, String project) {
             connection.setRequestMethod("POST")
             connection.setDoOutput(true)
             connection.connect()
+            
+            // replaceAll("[^\\x00-\\x7F]", "") == stip non ascii characters
+            // .readLines().join('<br />').trim() == github comments are structured using html, not linebreaks
 
             String fileContents = new File("${filename}").readLines().join('<br />').trim().replaceAll("[^\\x00-\\x7F]", "")
-            echo "${fileContents}"
             def body = "{\"body\":\"${fileContents}\"}"
 
             OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())
