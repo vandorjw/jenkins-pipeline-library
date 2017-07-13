@@ -10,9 +10,8 @@ def call(String filename, String pr, String project) {
     withCredentials([[$class: 'StringBinding', credentialsId: 'github_oath_token', variable: 'GITHUB_ACCESS_TOKEN']]) {
         def githubToken = "${GITHUB_ACCESS_TOKEN}"
         def apiUrl = new URL("https://api.github.com/repos/${project}/issues/${pr}/comments")
-        echo "adding ${comment} to ${apiUrl}"
         try {
-            String fileContents = new File("${filename}").readLines().join('<br />').trim()
+            String fileContents = new File("${filename}").readLines().join('<br />').trim().replaceAll("[^\\x00-\\x7F]", "");
             def body = "{\"body\":\"${fileContents}\"}"
         } catch (err) {
             def body = "{\"body\":\"Can't parse ${filename}\"}"
@@ -32,7 +31,6 @@ def call(String filename, String pr, String project) {
 
             // execute the POST request
             new InputStreamReader(connection.getInputStream())
-
             connection.disconnect()
         } catch (err) {
             echo "ERROR  ${err}"
