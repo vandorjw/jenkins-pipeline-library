@@ -1,4 +1,7 @@
 #!/usr/bin/groovy
+@Grapes(
+    @Grab(group='com.amazonaws', module='aws-java-sdk', version='1.11.163')
+)
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
