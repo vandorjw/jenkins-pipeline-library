@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+import groovy.json.*;
 
 /**
  * Creates a new release in github using the github api
