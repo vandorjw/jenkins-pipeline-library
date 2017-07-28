@@ -57,6 +57,7 @@ class GitHubRelease {
         def jsonSlurper = new JsonSlurper()
         def jsonResponse = jsonSlurper.parseText(responseBody)
         String releaseId = jsonResponse['id']
+        println(releaseId)
         return releaseId
     }
 
@@ -77,6 +78,7 @@ class GitHubRelease {
         def jsonSlurper = new JsonSlurper()
         def jsonResponse = jsonSlurper.parseText(responseBody)
         String uploadUrl = jsonResponse['upload_url']
+        println(uploadUrl)
         return uploadUrl
     }
 
@@ -86,7 +88,7 @@ class GitHubRelease {
     * @param fileName
     * @param filePath
     */
-    def uploadArtifact(String uploadUrl, String fileName, String filePath) {
+    void uploadArtifact(String uploadUrl, String fileName, String filePath) {
         String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
         String CRLF = "\r\n"; // Line separator required by multipart/form-data.
         String uploadUrlPrefix = uploadUrl.split('\\{\\?')[0]
@@ -103,25 +105,25 @@ class GitHubRelease {
 
         File binaryFile = new File(filePath)
 
-        OutputStream output = connection.getOutputStream();
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(output), true);
+        OutputStream output = connection.getOutputStream()
+        PrintWriter writer = new PrintWriter(new OutputStreamWriter(output), true)
 
         // Send binary file.
-        writer.append("--" + boundary).append(CRLF);
-        writer.append("Content-Disposition: form-data; name=\"binaryFile\"; filename=\"" + binaryFile.getName() + "\"").append(CRLF);
-        writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(binaryFile.getName())).append(CRLF);
-        writer.append("Content-Transfer-Encoding: binary").append(CRLF);
-        writer.append(CRLF).flush();
-        Files.copy(binaryFile.toPath(), output);
-        output.flush(); // Important before continuing with writer!
-        writer.append(CRLF).flush(); // CRLF is important! It indicates end of boundary.
+        writer.append("--" + boundary).append(CRLF)
+        writer.append("Content-Disposition: form-data; name=\"binaryFile\"; filename=\"" + binaryFile.getName() + "\"").append(CRLF)
+        writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(binaryFile.getName())).append(CRLF)
+        writer.append("Content-Transfer-Encoding: binary").append(CRLF)
+        writer.append(CRLF).flush()
+        Files.copy(binaryFile.toPath(), output)
+        output.flush() // Important before continuing with writer!
+        writer.append(CRLF).flush() // CRLF is important! It indicates end of boundary.
         // End of multipart/form-data.
-        writer.append("--" + boundary + "--").append(CRLF).flush();
+        writer.append("--" + boundary + "--").append(CRLF).flush()
 
         InputStream response = connection.getInputStream()
         Scanner scanner = new Scanner(response)
         String responseBody = scanner.useDelimiter("\\A").next()
         connection.disconnect()
-        return responseBody
+        println(responseBody)
     }
 }
