@@ -30,7 +30,6 @@ class GitHubRelease {
     * @return String releaseID
     */
     String createRelease(String tagName, String targetCommitish, String releaseDescription, boolean isDraft, boolean isPrerelease) {
-        echo "echo createRelease"
         def apiUrl = new URL("https://api.github.com/repos/${owner}/${repo}/releases")
         def HttpURLConnection connection = apiUrl.openConnection()
         connection.setRequestProperty("Authorization", "Bearer ${githubToken}")
@@ -58,7 +57,6 @@ class GitHubRelease {
         def jsonSlurper = new JsonSlurper()
         def jsonResponse = jsonSlurper.parseText(responseBody)
         String releaseId = jsonResponse['id']
-        echo "echo createRelease ${releaseId}"
         return releaseId
     }
 
