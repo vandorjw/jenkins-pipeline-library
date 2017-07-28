@@ -84,8 +84,9 @@ class GitHubRelease {
     * https://developer.github.com/v3/repos/releases/#upload-a-release-asset
     * @param uploadUrl
     * @param fileName
+    * @param filePath
     */
-    def uploadArtifact(String uploadUrl, String fileName) {
+    def uploadArtifact(String uploadUrl, String fileName, String filePath) {
         String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
         String CRLF = "\r\n"; // Line separator required by multipart/form-data.
         String uploadUrlPrefix = uploadUrl.split('\\{\\?')[0]
@@ -100,7 +101,7 @@ class GitHubRelease {
         connection.setDoOutput(true)
         connection.connect()
 
-        File binaryFile = new File(fileName)
+        File binaryFile = new File(filePath)
 
         OutputStream output = connection.getOutputStream();
         PrintWriter writer = new PrintWriter(new OutputStreamWriter(output), true);
