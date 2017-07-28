@@ -22,7 +22,8 @@ class GitHubRelease {
     * @return String releaseID
     */
     String createRelease(String tagName, String targetCommitish, String releaseDescription, boolean isDraft, boolean isPrerelease) {
-
+        println("println createRelease")
+        echo "echo createRelease"
         def apiUrl = new URL("https://api.github.com/repos/${owner}/${repo}/releases")
         def HttpURLConnection connection = apiUrl.openConnection()
         connection.setRequestProperty("Authorization", "Bearer ${githubToken}")
@@ -50,6 +51,8 @@ class GitHubRelease {
         def jsonSlurper = new JsonSlurper()
         def jsonResponse = jsonSlurper.parseText(responseBody)
         String releaseId = jsonResponse['id']
+        println("println createRelease ${releaseId}")
+        echo "echo createRelease ${releaseId}"
         return releaseId
     }
 
@@ -129,10 +132,17 @@ class GitHubRelease {
  */
 def call(String owner, String repo, String name, String tagName, String commitish, String artifactName, String githubToken) {
     try {
+        println("println call")
+        echo "echo call"
         def release = new GitHubRelease(githubToken: githubToken, owner: owner, repo: repo)
+        println("println release object")
+        echo "echo release object"
         String releaseId = release.createRelease(tagName, commitish, 'Created from CI', false, false)
+        println("println ${releaseId}")
+        echo "println ${releaseId}"
         String uploadUrl = release.getUploadUrl(releaseId)
         String responseBody = release.uploadArtifact(uploadUrl, artifactName)
+        echo "${responseBody}"
     } catch (err) {
         echo "ERROR  ${err}"
     }
